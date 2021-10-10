@@ -1,0 +1,2 @@
+rootProject.name = '2021-10-otus-java-diev'
+include 'hw01-gradle'
