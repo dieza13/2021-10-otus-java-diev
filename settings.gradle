@@ -2,4 +2,5 @@ rootProject.name = '2021-10-otus-java-diev'
 include 'hw01-gradle'
 include 'hw02-generics'
 include 'hw03-reflections'
+include 'hw04-gc:homework'
 
