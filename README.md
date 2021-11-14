@@ -12,3 +12,4 @@ java-2021-09
 Работа 2: hw02-generics  
 Работа 3: hw03-reflections  
 Работа 4: hw04-gc
+Работа 5: hw05-byteCodes
