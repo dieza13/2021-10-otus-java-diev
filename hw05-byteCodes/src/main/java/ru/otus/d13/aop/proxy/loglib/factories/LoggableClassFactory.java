@@ -26,18 +26,18 @@ public class LoggableClassFactory {
 
     static class ImplementationLoggableCreatorInvocationHandler<C> implements InvocationHandler {
         private final C implClass;
-        private final HashSet<Method> IS_LOGGABLE_METHOD;
+        private final Set<Method> loggableMethod;
 
         ImplementationLoggableCreatorInvocationHandler(C implClass) {
             this.implClass = implClass;
-            IS_LOGGABLE_METHOD = Arrays.stream((implClass.getClass()).getDeclaredMethods())
-                    .filter(f->f.getDeclaredAnnotation(Log.class) != null)
+            loggableMethod = Arrays.stream((implClass.getClass()).getDeclaredMethods())
+                    .filter(f->f.isAnnotationPresent(Log.class))
                     .collect(Collectors.toCollection(HashSet::new));
         }
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            if (IS_LOGGABLE_METHOD.contains(implClass.getClass().getDeclaredMethod(method.getName(),method.getParameterTypes()))) {
+            if (loggableMethod.contains(implClass.getClass().getDeclaredMethod(method.getName(),method.getParameterTypes()))) {
                 printMethodAndParams(method,args);
             }
             return method.invoke(implClass, args);
