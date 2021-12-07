@@ -12,7 +12,7 @@ import static ru.otus.d13.atm.messages.Messages.ERR_TO_LITTLE_BANKNOTES;
 
 /**
  * Ячейка банкомата
- * @param <T> - тип банкот в ячейке
+ * @param <T> - тип банкнот в ячейке
  */
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)

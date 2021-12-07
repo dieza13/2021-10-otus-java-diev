@@ -5,9 +5,8 @@ import ru.otus.d13.atm.pojo.Banknote;
 import java.util.List;
 
 public interface ATM {
-    void putBanknotes(String accountHolderName, List<Banknote> banknotes);
-    <T> List<T> withdrawCash(String accountHolderName, int sum);
-    int getAccountBalance(String accountHolderName);
+    void putBanknotes(List<Banknote> banknotes);
+    <T> List<T> withdrawCash(int sum);
     int getBalance();
 
 }

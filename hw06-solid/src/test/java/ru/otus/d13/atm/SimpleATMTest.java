@@ -7,15 +7,11 @@ import org.junit.jupiter.api.Test;
 import ru.otus.d13.atm.atm.ATM;
 import ru.otus.d13.atm.atm.SimpleATM;
 import ru.otus.d13.atm.cells.UniBanknoteCellProvider;
-import ru.otus.d13.atm.pojo.Account;
 import ru.otus.d13.atm.pojo.Banknote;
 import ru.otus.d13.atm.pojo.RubBanknote;
 import ru.otus.d13.atm.slots.BanknoteCellSlot;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -27,10 +23,7 @@ public class SimpleATMTest {
     ATM atm;
     List<String> output;
 
-    List<Account> accounts = Arrays.asList(
-            new Account("Карабас", 100000)
-            , new Account("Буратино", 15000)
-            , new Account("Пьерро", 5000));
+    List<Integer> sums = Arrays.asList(100000, 15000, 5000);
 
     @BeforeEach
     void initTest() {
@@ -38,11 +31,7 @@ public class SimpleATMTest {
         output.add("<---------START TEST--------->");
         Map<Banknote, Integer> banknoteCountMap = Arrays.stream(RubBanknote.values()).collect(Collectors.toMap(Function.identity(), b -> 5));
         BanknoteCellSlot slot = new BanknoteCellSlot(banknoteCountMap, new UniBanknoteCellProvider());
-        atm = new SimpleATM(accounts, slot);
-        output.add(String.format("Клиенты: %s", accounts
-                .stream()
-                .map(Account::toString)
-                .collect(Collectors.joining(";", "[", "]"))));
+        atm = new SimpleATM(slot);
         output.add(String.format("В банкомате купюры номиналом: %s", banknoteCountMap));
         output.add(String.format("На общую сумму: %s\n", banknoteCountMap.entrySet()
                 .stream()
@@ -57,13 +46,13 @@ public class SimpleATMTest {
     }
 
     @Test
-    @DisplayName("Пополнение счета банкнотами разного номинала")
+    @DisplayName("Внесение банкнот разного номинала")
     public void putBanknotesDifferentNominal() {
-        output.add("!!!Пополнить счет банкнотами разного номинала!!!");
+        output.add("!!!Внести банкноты разного номинала!!!");
 
-        // каждый внесет на счет по 8800
+        // пытаемся внести пачку банкнот на сумму 8800
         List<Banknote> banknotes = Arrays.asList(RubBanknote.values());
-        accounts.forEach(account -> putBanknotesCheck(banknotes, account.getOwner(), atm));
+        putBanknotesCheck(banknotes, atm);
 
     }
 
@@ -72,78 +61,39 @@ public class SimpleATMTest {
     public void getSumma() {
         output.add("!!!Выдавать запрошенную сумму!!!");
 
-        // каждый пробует получить всю сумму со счета
-        accounts.forEach(account -> getSummaCheck(account.getOwner(), account.getAmount(), atm));
+        // пробуем получить разные суммы
+        sums.forEach(sum -> getSummaCheck(sum, atm));
 
-        // Буратино пробует получить отрицательную сумму
-        getSummaCheck(accounts.get(1).getOwner(), -5000, atm);
+        // пробуем получить отрицательную сумму
+        getSummaCheck(-5000, atm);
 
-        // Буратино пробует получить сумму больше, чем у него есть
-        getSummaCheck(accounts.get(1).getOwner(), 17000, atm);
-
-        // Карабас пробует получить сумму банкнотами разных номиналов
-        getSummaCheck(accounts.get(0).getOwner(), 13800, atm);
-    }
-
-    @Test
-    @DisplayName("Сумма остатка денежных средств")
-    public void getBalanceOfFunds() {
-        output.add("!!!Сумма остатка денежных средств!!!");
-        // каждый пробует получить 7300
-        int sum = 4300;
-        List<Integer> balancesBefore = accounts.stream().map(a->atm.getAccountBalance(a.getOwner())).collect(Collectors.toList());
-        int atmBalanceBefore = atm.getBalance();
-        accounts.forEach(account -> atm.withdrawCash(account.getOwner(), sum));
-        List<Integer> balancesAfter = accounts.stream().map(a->atm.getAccountBalance(a.getOwner())).collect(Collectors.toList());
-        int atmBalanceAfter = atm.getBalance();
-        getBalanceOfFundsCheck(balancesBefore,balancesAfter,accounts,atmBalanceBefore,atmBalanceAfter,sum);
+        // пробуем получить сумму банкнотами разных номиналов
+        List<List<Banknote>> banknotes = getSummaCheck(13800, atm);
+        String res = "Пачки содержат банкноты следующих номиналов: " +
+                banknotes.stream().map(l->String.valueOf(l.size())
+                        .concat(" по ")
+                        .concat(String.valueOf(l.get(0).getNominal()))
+                        .concat(";")).reduce((a,b)->a + b);
+        output.add(res);
     }
 
     /**
-     * Проверка баланса счетов до и после операции
-     * @param balancesBefore - балансы счетов до операции снятия
-     * @param balancesAfter - балансы счетов после операции снятия
-     * @param accounts - счета
-     * @param atmBalanceBefore - общий баланс банкомата до операции снятия
-     * @param atmBalanceAfter - общий баланс банкомата после операции снятия
-     * @param chgAmount - снимаемая сумма
-     */
-    void getBalanceOfFundsCheck(List<Integer> balancesBefore
-                               ,List<Integer> balancesAfter
-                               ,List<Account> accounts
-                               ,int atmBalanceBefore
-                               ,int atmBalanceAfter
-                               ,int chgAmount) {
-        output.add(String.format("---Каждый клиент снял со счета по %d",chgAmount));
-        for (int i = 0; i < accounts.size(); i++) {
-            output.add(String.format("%s было/стало: %d/%d", accounts.get(i).getOwner(),balancesBefore.get(i),balancesAfter.get(i)));
-            int resWithChg = balancesAfter.get(i) + chgAmount;
-            assertThat(resWithChg).isEqualTo(balancesBefore.get(i));
-        }
-        int resBWithChg = chgAmount * 3 + atmBalanceAfter;
-        assertThat(resBWithChg).isEqualTo(atmBalanceBefore);
-        output.add(String.format("Баланс до/после снятий: %d/%d", atmBalanceBefore, atmBalanceAfter));
-    }
-
-    /**
-     * Проверка пополнения счета
+     * Проверка пополнения
      * @param banknotes - пачка банкнот
-     * @param accountOwnerName - держатель счета
      * @param atm - банкомат
      */
-    void putBanknotesCheck(List<Banknote> banknotes, String accountOwnerName, ATM atm) {
-        int accountBalanceBefore = atm.getAccountBalance(accountOwnerName);
+    void putBanknotesCheck(List<Banknote> banknotes, ATM atm) {
+
+        output.add(String.format("Пытаемся внести пачку банкнот номиналами: %s", banknotes));
         int atmBalanceBefore = atm.getBalance();
+        // общая сумма банкнот, которые вносим
         int depositedAmount = Arrays
                 .stream(RubBanknote.values())
                 .map(Banknote::getNominal)
                 .reduce(Integer::sum).orElse(0);
-        atm.putBanknotes(accountOwnerName, banknotes);
-        // проверим изменения на счете и в банкомате и выдадим результат проверки
+        atm.putBanknotes(banknotes);
+        // проверим изменения в банкомате и выдадим результат проверки
         checkBalanceChg(BalanceChangeAction.PUT
-                , accountOwnerName
-                , accountBalanceBefore
-                , atm.getAccountBalance(accountOwnerName)
                 , atmBalanceBefore
                 , atm.getBalance()
                 , depositedAmount);
@@ -151,74 +101,58 @@ public class SimpleATMTest {
 
     /**
      * Проверка выдачи наличных
-     * @param account - счет клиента
      * @param summ - запрашиваемая сумма
      * @param atm - банкомат
      */
-    void getSummaCheck(String account, Integer summ, ATM atm) {
+    List<List<Banknote>> getSummaCheck(Integer summ, ATM atm) {
+        output.add(String.format("Пытаемся получить сумму: %d", summ));
         int chgSum = 0;
         SimpleATM sAtm = (SimpleATM) atm;
-        int accountBalanceBefore = atm.getAccountBalance(account);
         int atmBalanceBefore = atm.getBalance();
         Exception exp = null;
         List<List<Banknote>> banknotes = null;
         try {
-            banknotes = atm.withdrawCash(account, summ);
+            banknotes = atm.withdrawCash(summ);
         } catch (Exception e) {
             exp = e;
             e.printStackTrace();
         }
-        // Провеим, что банкомат не выдает недопустимые суммы
+        // Проверим, что банкомат не выдает недопустимые суммы
         if (summ <= 0) {
             assertThat(exp).hasMessage(ERR_NEGATIVE_AMOUNT_REQUESTED);
         } else if (summ > atmBalanceBefore) {
             assertThat(exp).hasMessage(ERR_ATM_CANT_ISSUE_SUM);
-        } else if (summ > accountBalanceBefore) {
-            assertThat(exp).hasMessage(ERR_NOT_ENOUGH_FUNDS);
         } else {
-
             // проверим, что сумма полученных банкнот = запрошенной сумме
             chgSum = banknotesSum(banknotes);
             assertThat(summ).isEqualTo(chgSum);
             // проверим, что банкноты в каждой пачке одного номинала
             assertThat(isBanknotesHasSameNominalInBatch(banknotes)).isTrue();
         }
-        // проверим изменения на счете и в банкомате и выдадим результат проверки
+        // проверим изменения в банкомате и выдадим результат проверки
         checkBalanceChg(BalanceChangeAction.GET
-                , account
-                , accountBalanceBefore
-                , atm.getAccountBalance(account)
                 , atmBalanceBefore
                 , atm.getBalance()
                 , chgSum);
-        output.add(String.format("%s хотел снять %d", account, summ));
+        return banknotes;
     }
 
     /**
-     * Проверка баланса счета и банкомата до и после изменения
+     * Проверка баланса банкомата до и после изменения
      * @param operation - тип операции (PUT/GET)
-     * @param account - счет
-     * @param accountBalanceBefore - баланс счета до
-     * @param accountBalanceAfter - баланс счета после
      * @param atmBalanceBefore - баланс банкомата до
      * @param atmBalanceAfter - баланс банкомата после
      * @param chgAmount - сумма операции
      */
     public void checkBalanceChg(BalanceChangeAction operation
-            , String account
-            , int accountBalanceBefore
-            , int accountBalanceAfter
             , int atmBalanceBefore
             , int atmBalanceAfter
             , int chgAmount) {
         String oper = (operation == BalanceChangeAction.PUT) ? "внесения" : "получения";
-        String oper2 = (operation == BalanceChangeAction.PUT) ? "внес" : "получил";
-        output.add(String.format("---Клиентский счет %s до/после %s средств: %d/%d", account, oper, accountBalanceBefore, accountBalanceAfter));
+        String oper2 = (operation == BalanceChangeAction.PUT) ? "внесена" : "получена";
         output.add(String.format("Общая сумма в банкомате до/после %s средств: %d/%d ", oper, atmBalanceBefore, atmBalanceAfter));
-        output.add(String.format("%s %s сумму: %d", account, oper2, chgAmount));
-        int accountAmountAfter = accountBalanceBefore + ((operation == BalanceChangeAction.PUT) ? chgAmount : -chgAmount);
+        output.add(String.format("%s сумма: %d", oper2, chgAmount));
         int atmAmountAfter = atmBalanceBefore + ((operation == BalanceChangeAction.PUT) ? chgAmount : -chgAmount);
-        assertThat(accountAmountAfter).isEqualTo(accountBalanceAfter);
         assertThat(atmAmountAfter).isEqualTo(atmBalanceAfter);
     }
 
@@ -229,19 +163,19 @@ public class SimpleATMTest {
      * @return сумма
      */
     int banknotesSum(List<List<Banknote>> banknotes) {
-        return banknotes
+        return Optional.ofNullable(banknotes
                 .stream()
                 .map(l -> l
                         .stream()
                         .map(Banknote::getNominal)
                         .reduce(Integer::sum).orElse(0))
-                .reduce(Integer::sum).orElse(0);
+                .reduce(Integer::sum).orElse(0)).orElse(0);
     }
 
     /**
      * Проверим, а в каждой ли пачке банкноты одного номинала
      * @param banknotes - список пачек бонкнот
-     * @return - результат проверки одного номинал банкнот в пачке
+     * @return - результат проверки
      */
     boolean isBanknotesHasSameNominalInBatch(List<List<Banknote>> banknotes) {
         return banknotes
