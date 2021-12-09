@@ -38,7 +38,7 @@ public class SimpleATM implements ATM {
      * @return - список пачек банкнот с банкнотами одного ногминала в пачке
      */
     @Override
-    public List withdrawCash(int sum) {
+    public List<List<Banknote>> withdrawCash(int sum) {
         // Проверяем корректность запрошенной суммы, а также, что сумма не превышает сумму в банкомате
         Optional.of(sum)
                 .map(val -> val <= 0 ? ERR_NEGATIVE_AMOUNT_REQUESTED : "empty")

@@ -12,14 +12,13 @@ import static ru.otus.d13.atm.messages.Messages.ERR_TO_LITTLE_BANKNOTES;
 
 /**
  * Ячейка банкомата
- * @param <T> - тип банкнот в ячейке
  */
 @Getter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UniBanknoteCell<T extends Banknote> extends BanknoteCell<T> {
+public class UniBanknoteCell extends BanknoteCell {
 
 
-    public UniBanknoteCell(T banknote, int count) {
+    public UniBanknoteCell(Banknote banknote, int count) {
         super(count, banknote);
     }
 
@@ -38,10 +37,10 @@ public class UniBanknoteCell<T extends Banknote> extends BanknoteCell<T> {
      * @return - пачка банкот
      */
     @Override
-    public List<T> getBanknotes(int count) {
+    public List<Banknote> getBanknotes(int count) {
         if (this.getCount() < count)
             throw new RuntimeException(ERR_TO_LITTLE_BANKNOTES);
-        List<T> banknotes = Stream.generate(this::getBanknote).limit(count).collect(Collectors.toList());
+        List<Banknote> banknotes = Stream.generate(this::getBanknote).limit(count).collect(Collectors.toList());
         decreaseCount(count);
         return banknotes;
     }

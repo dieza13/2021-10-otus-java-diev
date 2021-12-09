@@ -8,13 +8,13 @@ import java.util.List;
 
 @Getter
 @Setter
-public abstract class BanknoteCell<T extends Banknote> {
+public abstract class BanknoteCell {
 
 
     private int count;
-    private T banknote;
+    private Banknote banknote;
 
-    BanknoteCell(int count, T banknote) {
+    BanknoteCell(int count, Banknote banknote) {
         this.count = count;
         this.banknote = banknote;
 
@@ -22,7 +22,7 @@ public abstract class BanknoteCell<T extends Banknote> {
 
     public abstract void putBanknotes(int count);
 
-    public abstract List<T> getBanknotes(int count);
+    public abstract List<Banknote> getBanknotes(int count);
 
     public abstract int nominal();
 
