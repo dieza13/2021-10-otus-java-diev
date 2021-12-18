@@ -11,5 +11,7 @@ java-2021-09
 Работа 1: hw01-gradle   
 Работа 2: hw02-generics  
 Работа 3: hw03-reflections  
-Работа 4: hw04-gc
-Работа 5: hw05-byteCodes
+Работа 4: hw04-gc   
+Работа 5: hw05-byteCodes  
+Работа 6: hw06-solid  
+Работа 7: hw07-structuralPatterns
