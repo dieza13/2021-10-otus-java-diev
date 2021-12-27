@@ -14,6 +14,6 @@ java-2021-09
 Работа 4: hw04-gc   
 Работа 5: hw05-byteCodes  
 Работа 6: hw06-solid  
-Работа 7: hw07-structuralPatterns
-Работа 8: hw08-io
-Работа 9: hw09-jdbc
+Работа 7: hw07-structuralPatterns  
+Работа 8: hw08-io  
+Работа 9: hw09-jdbc  
