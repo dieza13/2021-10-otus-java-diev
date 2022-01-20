@@ -3,7 +3,11 @@ package ru.otus.crm.service;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.otus.base.AbstractHibernateTest;
+import ru.otus.crm.model.Address;
 import ru.otus.crm.model.Client;
+import ru.otus.crm.model.Phone;
+
+import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -14,7 +18,10 @@ class DbServiceClientTest extends AbstractHibernateTest {
     @DisplayName(" корректно сохранять, изменять и загружать клиента")
     void shouldCorrectSaveClient() {
         //given
-        var client = new Client("Ivan");
+
+        var address = new Address(null, "улица Вязов, д.13");
+        var phones = Arrays.asList(new Phone(null, "911"));
+        var client = new Client("Ivan",address, phones);
 
         //when
         var savedClient = dbServiceClient.saveClient(client);

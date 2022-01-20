@@ -1,13 +1,12 @@
 package ru.otus.crm.model;
 
-import lombok.AccessLevel;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Data
+@Getter @Setter @ToString
 @Entity
 @Table(name = "phone")
 public class Phone {
@@ -19,7 +18,7 @@ public class Phone {
     @Column(name = "number")
     String number;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="client_id", nullable = false)
     Client client;
 
@@ -27,6 +26,11 @@ public class Phone {
     public Phone(Long id, String number) {
         this.id = id;
         this.number = number;
+    }
+
+    @Override
+    public Phone clone()  {
+        return new Phone(id,number);
     }
 
     public Phone() {

@@ -59,8 +59,13 @@ public class Client implements Cloneable {
     }
 
     @Override
-    public Client clone() {
-        return new Client(this.id, this.name);
+    public Client clone()  {
+
+        Address addressClone = (address != null) ? address.clone() : address;
+        ArrayList<Phone> clonePhones = new ArrayList<> ();
+        if (phones != null && phones.size() > 0)
+            phones.forEach(p->clonePhones.add(p.clone()));
+        return new Client(id,name,addressClone,clonePhones);
     }
 
     public Long getId() {

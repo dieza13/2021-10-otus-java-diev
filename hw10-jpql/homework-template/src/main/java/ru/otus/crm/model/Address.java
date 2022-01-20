@@ -1,26 +1,30 @@
 package ru.otus.crm.model;
 
-import lombok.AccessLevel;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import javax.persistence.*;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Data
+@Getter @Setter @ToString
 @Entity
 @Table(name = "address")
-public class Address  {
+public class Address implements Cloneable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     Long id;
 
     @Column(name = "address_text")
-    String address_text;
+    String addressText;
 
-    public Address(Long id, String address_text) {
+    public Address(Long id, String addressText) {
         this.id = id;
-        this.address_text = address_text;
+        this.addressText = addressText;
+    }
+
+    @Override
+    public Address clone()  {
+        return new Address(id,addressText);
     }
 
     public Address() {
