@@ -14,17 +14,16 @@ public class Address implements Cloneable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     Long id;
 
-    @Column(name = "address_text")
-    String addressText;
+    @Column(name = "street")
+    String street;
 
-    public Address(Long id, String addressText) {
+    public Address(Long id, String street) {
         this.id = id;
-        this.addressText = addressText;
     }
 
     @Override
     public Address clone()  {
-        return new Address(id,addressText);
+        return new Address(id, street);
     }
 
     public Address() {

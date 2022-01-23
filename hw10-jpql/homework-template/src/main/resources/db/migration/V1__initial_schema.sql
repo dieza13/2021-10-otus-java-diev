@@ -22,7 +22,7 @@ create table client
 create table address
 (
     id   bigint not null primary key,
-    address_text varchar(50)
+    street varchar(50)
 );
 
 create table phone

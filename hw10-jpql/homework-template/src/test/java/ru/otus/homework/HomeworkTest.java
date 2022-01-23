@@ -20,6 +20,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import static java.util.Comparator.comparing;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class HomeworkTest {
@@ -61,7 +62,7 @@ class HomeworkTest {
             }
         });
 
-        var client = new Client(null, "Vasya", new Address(null, "AnyStreet"), List.of(new Phone(null, "13-555-22")));
+        var client = new Client(null, "Vasya", new Address(null, "AnyStreet"), List.of(new Phone(null, "13-555-22"), new Phone(null, "14-666-333")));
         try (var session = sessionFactory.openSession()) {
             session.getTransaction().begin();
             session.persist(client);
@@ -69,8 +70,14 @@ class HomeworkTest {
 
             session.clear();
 
-            var loadedClient = session.find(Client.class, 1L);
-            assertThat(loadedClient).usingRecursiveComparison().isEqualTo(client);
+            var loadedClient = session.find(Client.class, 1L).clone();
+            assertThat(loadedClient).usingRecursiveComparison()
+                    .withComparatorForType(comparing(Address::getId)
+                                    .thenComparing(Address::getStreet),
+                            Address.class)
+                    .withComparatorForType(comparing(Phone::getId)
+                            .thenComparing(Phone::getNumber), Phone.class)
+                    .isEqualTo(client);
         }
     }
 
