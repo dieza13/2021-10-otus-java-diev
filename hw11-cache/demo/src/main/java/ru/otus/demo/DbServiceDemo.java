@@ -8,7 +8,7 @@ import ru.otus.crm.datasource.DriverManagerDataSource;
 import ru.otus.core.repository.executor.DbExecutorImpl;
 import ru.otus.crm.repository.ClientDataTemplateJdbc;
 import ru.otus.core.sessionmanager.TransactionRunnerJdbc;
-import ru.otus.crm.service.DbServiceClientImpl;
+import ru.otus.crm.service.DbServiceClientCached;
 
 import javax.sql.DataSource;
 
@@ -28,7 +28,7 @@ public class DbServiceDemo {
         var clientTemplate = new ClientDataTemplateJdbc(dbExecutor); //реализация DataTemplate, заточена на Client
 
 ///
-        var dbServiceClient = new DbServiceClientImpl(transactionRunner, clientTemplate);
+        var dbServiceClient = new DbServiceClientCached(transactionRunner, clientTemplate);
         dbServiceClient.saveClient(new Client("dbServiceFirst"));
 
         var clientSecond = dbServiceClient.saveClient(new Client("dbServiceSecond"));

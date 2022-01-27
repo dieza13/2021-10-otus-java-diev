@@ -7,23 +7,19 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.shaded.org.apache.commons.lang.math.IntRange;
-import ru.otus.HomeWork;
 import ru.otus.core.repository.executor.DbExecutorImpl;
 import ru.otus.core.sessionmanager.TransactionRunnerJdbc;
 import ru.otus.crm.datasource.DriverManagerDataSource;
 import ru.otus.crm.model.Client;
 import ru.otus.crm.service.DBServiceClient;
+import ru.otus.crm.service.DbServiceClientCached;
 import ru.otus.crm.service.DbServiceClientImpl;
-import ru.otus.crm.service.DbServiceClientImpl_Old;
 import ru.otus.jdbc.mapper.*;
 
 import javax.sql.DataSource;
-import java.util.List;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -68,8 +64,8 @@ public class CacheVsDBTest {
 
         int clientCount = 1500;
 
-        var dbServiceClient = new DbServiceClientImpl(transactionRunner, dataTemplateClient);
-        var dbServiceClient_Old = new DbServiceClientImpl_Old(transactionRunner, dataTemplateClient);
+        var dbServiceClient = new DbServiceClientCached(transactionRunner, dataTemplateClient);
+        var dbServiceClient_Old = new DbServiceClientImpl(transactionRunner, dataTemplateClient);
 
 
         long oldServiceExecTime = executeClientSaveGet(dbServiceClient_Old, clientCount);
