@@ -1,0 +1,46 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Клиенты</title>
+    <script>
+        function redirect(){
+           document.location = '/client';
+        }
+
+
+    </script>
+</head>
+
+<body>
+
+<img src="img/clients.jpeg" style="width: 300px; height: 300px">
+<h4>Клиенты</h4>
+<button onclick="redirect()">Новый</button>
+<pre id="clientDataContainer"></pre>
+
+<h4>Список клиентов</h4>
+
+<table style="width: 400px">
+    <thead>
+    <tr>
+        <td style="width: 50px">Id</td>
+        <td style="width: 150px">Имя</td>
+        <td style="width: 150px">Адрес</td>
+        <td style="width: 150px">Телефон</td>
+    </tr>
+    </thead>
+    <tbody>
+    <#list clients as client>
+    <tr>
+        <td>${client.id}</td>
+        <td><#if (client.name??)>${client.name}<#else>no_name</#if></td>
+        <td><#if (client.address??)>${client.address}<#else>no_address</#if></td>
+        <td><#if (client.phone??)>${client.phone}<#else>no_phone</#if></td>
+
+    </tr>
+    </#list>
+    </tbody>
+</table>
+
+
+</body>
+</html>

@@ -1,0 +1,40 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Новый клиент</title>
+    <script>
+
+        function redirect(){
+           document.location = '/clients';
+        }
+
+
+    </script>
+</head>
+
+<body>
+<img src="img/client.png" style="width: 300px; height: 300px">
+<h4>Новый клиент</h4>
+<div class="top">
+    <br/>
+    <form action="client" method="post">
+        <label>
+            Имя <br/>
+            <input type="text" name="name" >
+        </label>
+        <br/>
+        <label>
+            Адрес<br/>
+            <input type="text" name="address" >
+        </label>
+        <br/>
+        <label>
+            Телефон<br/>
+            <input type="text" name="phone" >
+        </label>
+        <br/><br/>
+        <input type="submit" value="Сохранить">
+        <input type="reset" name="cancel" value="Назад" onclick="redirect()" />
+    </form>
+</div>
+</body>
+</html>
