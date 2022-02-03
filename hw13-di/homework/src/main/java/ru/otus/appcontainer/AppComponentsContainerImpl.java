@@ -84,11 +84,14 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
     }
 
     private void handleConfigArray(List<Class<?>> configs) {
-        configs
+        List<Class<?>> cnfs = configs
                 .stream()
                 .filter(cnf->cnf.isAnnotationPresent(AppComponentsContainerConfig.class))
                 .sorted(Comparator.comparingInt(cnf -> cnf.getAnnotation(AppComponentsContainerConfig.class).order()))
-                .forEach(this::processConfig);
+                .collect(Collectors.toList());
+        for (Class<?> clazz : cnfs) {
+            processConfig(clazz);
+        }
     }
 
     private Object[] getObjects4InParams(Method method) {
