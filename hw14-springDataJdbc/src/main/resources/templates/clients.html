@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Клиенты</title>
+    <script>
+        function redirect(){
+           document.location = '/client';
+        }
+    </script>
+</head>
+
+<body>
+
+<img src="img/clients.jpeg" style="width: 300px; height: 300px">
+<h4>Клиенты</h4>
+<button onclick="redirect()">Новый</button>
+<pre id="clientDataContainer"></pre>
+
+<h4>Список клиентов</h4>
+
+<table class="clients">
+    <thead>
+    <tr>
+        <td style="width: 50px">Id</td>
+        <td style="width: 150px">Имя</td>
+        <td style="width: 150px">Адрес</td>
+        <td style="width: 150px">Телефон</td>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="client : ${clients}">
+        <td th:text="${client.id}">1</td>
+        <td th:text="${client.name}">John Doe</td>
+        <td th:text="${client.address}">John Doe</td>
+        <td th:text="${client.phone}">John Doe</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

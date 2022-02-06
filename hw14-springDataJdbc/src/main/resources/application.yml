@@ -1,0 +1,13 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5430/demoDB
+    username: usr
+    password: pwd
+  flyway:
+    baselineOnMigrate: true
+    enabled: true
+logging:
+  level:
+    org.springframework.jdbc.core.JdbcTemplate: TRACE
