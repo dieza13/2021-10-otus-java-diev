@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Новый клиент</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        label {
+            display: inline-block;
+            width: 100px;
+        }
+
+        input:read-only {
+            background: lightgray;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+    </style>
+    <script>
+
+        function redirect(){
+           document.location = '/clients';
+        }
+
+
+    </script>
+</head>
+
+<body>
+<img src="img/client.png" style="width: 300px; height: 300px">
+<h4>Новый клиент</h4>
+<div class="top">
+    <br/>
+    <form id="create-form" th:action="@{/client}" th:object="${client}" th:method="post" accept-charset="utf-8">
+        <div class="row">
+            <label for="clientName">Имя:</label>
+            <input id="clientName" name="name" type="text" th:value="*{name}"/>
+        </div>
+        <div class="row">
+            <label for="clientAddress">Адрес:</label>
+            <input id="clientAddress" name="address" type="text" th:value="*{address}"/>
+        </div>
+        <div class="row">
+            <label for="clientPhone">Телефон:</label>
+            <input id="clientPhone" name="phone" type="text" th:value="*{phone}"/>
+        </div>
+
+        <div class="row">
+            <button type="submit">Сохранить</button>
+            <button type="reset" name="cancel" onclick="redirect()">Назад</button>
+        </div>
+
+    </form>
+</div>
+</body>
+</html>
