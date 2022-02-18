@@ -69,7 +69,6 @@ public class MainClass {
     }
 
     private void runSimpleExecutor(ExecutorService executor, int num) {
-        final AtomicInteger delta = new AtomicInteger(1);
         executor.execute(()-> {
             try {
                 countingSimple(num);
