@@ -4,7 +4,6 @@ package ru.otus.d13;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -18,7 +17,8 @@ public class MainClass {
 
 
     public static void main(String[] args) {
-        new MainClass().executorInWork();
+//        new MainClass().executorInWork();
+        new MainClass().simpleExecutorInWork();
     }
 
     private void executorInWork() {
@@ -58,6 +58,37 @@ public class MainClass {
 
     }
 
+/////////////////////////////////////////////////////////////////////////////// обычный executor
+
+    private void simpleExecutorInWork() {
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+
+        runSimpleExecutor(executor, 1);
+        runSimpleExecutor(executor, 2);
+
+    }
+
+    private void runSimpleExecutor(ExecutorService executor, int num) {
+        final AtomicInteger delta = new AtomicInteger(1);
+        executor.execute(()-> {
+            try {
+                countingSimple(num);
+            } catch (Exception e) {
+                Thread.currentThread().interrupt();
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    private void countingSimple(int num) throws Exception {
+        int direction = 1;
+        while (true) {
+            counting(num,direction);
+            direction = -direction;
+        }
+    }
+
+/////////////////////////////////////////////////////////////////////////////// sleep
     private static void sleep() {
         try {
             Thread.sleep(TimeUnit.MILLISECONDS.toMillis(SLEEP_TIME));
