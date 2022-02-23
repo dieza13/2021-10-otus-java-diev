@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package ru.otus.d13.grpc.generated;
+
+option java_multiple_files = true;
+
+message RemoteSequence {
+    int32 firstNumber = 1;
+    int32 lastNumber = 2;
+}
+message Number {
+    int32 value = 1;
+}
+
+message Empty {}
+
+service RemoteDBService {
+    rpc generateSequence(RemoteSequence) returns (stream Number);
+}
