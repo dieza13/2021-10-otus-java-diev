@@ -18,4 +18,5 @@ include 'hw12-webServer:homework'
 include 'hw13-di:homework'
 include 'hw14-springDataJdbc'
 include 'hw15-executors'
+include 'hw16-concurrentCollections:QueueDemo'
 
